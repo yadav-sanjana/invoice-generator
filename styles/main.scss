@@ -2,3 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+
+body {
+  position: relative;
+  min-height: 100vh;
+}
+
