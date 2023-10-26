@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { AiOutlineCloseCircle, AiOutlinePlusCircle } from 'react-icons/ai'
 
-const FormTable = () => {
+const FormTable = (updateTableData) => {
     const [tableData, setTableData] = useState([
         {
             item: "",
             description: "",
             rate: "",
+            qty: "",
             tax: "",
             amount: ""
         },
@@ -18,6 +19,7 @@ const FormTable = () => {
                 item: "",
                 description: "",
                 rate: "",
+                qty: "",
                 tax: "",
                 amount: ""
             }
@@ -38,6 +40,23 @@ const FormTable = () => {
         const { name, value } = e.target
         const updatedData = [...tableData]
         updatedData[index][name] = value
+
+        if (name === 'qty' || name === 'rate') {
+            const qty = parseFloat(updatedData[index].qty)
+            const price = parseFloat(updatedData[index].rate)
+
+            if (!isNaN(qty) && !isNaN(price)) {
+                updatedData[index].amount = (price * qty).toFixed(2)
+            } else {
+                updatedData[index].amount = ""
+            }
+
+        }
+
+        setTableData(updatedData)
+        console.log(updatedData);
+        updateTableData(updateTableData)
+
     }
 
     return (
@@ -53,6 +72,9 @@ const FormTable = () => {
                         </th>
                         <th scope="col" className="px-6 py-3">
                             Rate
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                            Qty
                         </th>
                         <th scope="col" className="px-6 py-3">
                             Tax
@@ -96,6 +118,14 @@ const FormTable = () => {
                                             placeholder='rate'
                                             name='rate'
                                             value={row.rate}
+                                            onChange={(e) => handleInputChange(index, e)} />
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <input className='h-7 w-full text-base border-0 p-1 mb-1 placeholder:text-slate-400'
+                                            type="number"
+                                            placeholder='qty'
+                                            name='qty'
+                                            value={row.qty}
                                             onChange={(e) => handleInputChange(index, e)} />
                                     </td>
                                     <td className="px-6 py-4">

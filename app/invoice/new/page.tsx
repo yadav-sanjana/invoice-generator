@@ -2,12 +2,14 @@
 import FormEditInvoice from '@/components/invoice/FormEditInvoice'
 import FormPreview from '@/components/invoice/FormPreview'
 import FormTable from '@/components/invoice/FormTable'
+import { CldUploadButton } from 'next-cloudinary'
 import React, { useState } from 'react'
 import { AiFillEye, AiFillPrinter, AiOutlineCloudUpload, AiOutlineDownload, AiOutlineEdit, AiOutlineSave } from 'react-icons/ai'
 import { CiMail } from 'react-icons/ci'
 
 const InvoicePage = () => {
     const [preview, setPreview] = useState(false)
+    const [logoUrl, setLogoUrl] = useState("")
 
     const [formData, setFormData] = useState({
         companyName: "",
@@ -25,22 +27,35 @@ const InvoicePage = () => {
 
     })
 
+    const [tableData, setTableData] = useState([])
+
+
     const handleInputChange = (e: { target: { name: any; value: any } }) => {
         const { name, value } = e.target
         setFormData({
             ...formData,
             [name]: value
         })
-
         console.log(formData, "befor submit");
     }
     const handleSubmit = (e: { preventDefault: () => void }) => {
         e.preventDefault()
 
+        const combinedData = {
+            ...formData,
+            tableData
+        }
+        console.log(combinedData, "combined data")
+
         console.log(formData);
         setPreview(!preview)
-
     }
+
+    const updateTableData: any = (newTableData) => {
+        setTableData(newTableData)
+    }
+
+    console.log(tableData);
 
     return (
         <div className='bg-slate-50 py-8 md:py-8 px-4 md:px-16'>
@@ -94,7 +109,10 @@ const InvoicePage = () => {
                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                         <AiOutlineCloudUpload className='w-6 h-6 text-gray-500 dark:text-gray-400' />
                                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                            <span className="font-semibold">Upload Logo</span>
+                                            <CldUploadButton onUpload={(data: any) => {
+                                                setLogoUrl(data?.info?.secure_url)
+
+                                            }} className='' uploadPreset="InvoicePreset" />
                                         </p>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">PNG (240x240px)</p>
                                     </div>
@@ -140,7 +158,7 @@ const InvoicePage = () => {
                             </div>
                         </div>
                         {/* table */}
-                        <FormTable />
+                        <FormTable updateTableData={updateTableData} />
 
                         <button className='bg-purple-600 py-3 px-6 text-white' type='submit'>Create</button>
                     </form>
