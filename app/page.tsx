@@ -6,7 +6,6 @@ export default function Home() {
    <main>
     <h2>
       <Hero/>
-      <NavBar/>
     </h2>
    </main>
   )
